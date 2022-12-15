@@ -1,12 +1,13 @@
+import { useRouter } from 'next/router'
 import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from '../styles/Home.module.css'
+import styles from '../../styles/Home.module.css'
 import Link from 'next/link'
 
-const inter = Inter({ subsets: ['latin'] })
-
-function Home({ posts }) {
+const Post = ({posts}) => {
+  const router = useRouter()
+  const { pid } = router.query
+  const post = posts[pid]
+  // console.log(post)
   return (
     <div className={styles.container}>
       <Head>
@@ -22,24 +23,20 @@ function Home({ posts }) {
             <Link href={'https://www.linkedin.com/in/kadir-kaya-5a790081/'} target='_blank' className={styles.sociallink}>Linkedin</Link>
           </div>
       </div>
-      {posts.map((post, index) => (
-        <div className='blog'>
-        <Link href={`/post/${index}`} className={styles.blogtitle}><h2>{post.title} </h2></Link>
+      <div className='blog'>
+        <h2 className='blog-title'>{post.title} </h2>
         <div className='blog-text'>
-        {post.text}
+          {post.text}
         </div>
         <div className={styles.blogdate}>{post.date}</div>
       </div>
-      ))}
-      
     </div>
   )
 }
-//
-Home.getInitialProps = async (ctx) => {
+Post.getInitialProps = async (ctx) => {
   const res = await fetch('http://localhost:3000/api/posts')
   const json = await res.json()
   return { posts: json.posts }
 }
 
-export default Home
+export default Post
